@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Receipt Frontend</title>
+      <style>
+      </style>
+   </head>
+   <body>
+
+      <button id="create">Create Unread Receipt</button>
+      <div id="status"></div>
+      <button id="all">Get All Receipts</button>
+      <div id="results"></div>
+
+      <script
+  src="https://code.jquery.com/jquery-3.2.1.js"
+  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
+  <script>
+   "use strict";
+
+   const CONNECT_URL = "localhost:4444"
+
+   $("#create").click(function() {
+      $.ajax({
+            url: "https://" + CONNECT_URL + "/create",
+            type: "GET",
+         }).then(function(data, status, xhr) {
+            console.log("I tried to create a new receipt");
+         })
+      });
+   });
+
+   $("#all").click(function() {
+      $.ajax({
+            url: "https://" + CONNECT_URL + "/all",
+            type: "GET",
+         }).then(function(data, status, xhr) {
+            let results = JSON.parse(data);
+            console.log(results);
+            $("#results").html(results)
+         })
+      });
+   });
+  </script>
+   </body>
+</html>
