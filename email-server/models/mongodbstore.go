@@ -47,7 +47,7 @@ func (ms *MongoStore) SetRead(id bson.ObjectId) error {
 	if err != nil {
 		return fmt.Errorf("error trying to set receipt to read: %v", err)
 	}
-	entry.Read = time.Now()
+	entry.Reads = append(entry.Reads, time.Now())
 	change := mgo.Change{
 		Update:    bson.M{"$set": entry},
 		ReturnNew: true,
@@ -62,13 +62,21 @@ func (ms *MongoStore) SetRead(id bson.ObjectId) error {
 func (ms *MongoStore) GetAllReceipts() ([]*Receipt, error) {
 	results := []*Receipt{}
 	col := ms.session.DB(ms.dbname).C(ms.colname)
-	err := col.Find(bson.M{}).All(results)
+	err := col.Find(bson.M{}).All(&results)
 	return results, err
 }
 
 func (ms *MongoStore) Delete(id bson.ObjectId) error {
 	col := ms.session.DB(ms.dbname).C(ms.colname)
 	if err := col.RemoveId(id); err != nil {
+		return fmt.Errorf("error deleting receipt: %v", err)
+	}
+	return nil
+}
+
+func (ms *MongoStore) DeleteAll() error {
+	col := ms.session.DB(ms.dbname).C(ms.colname)
+	if _, err := col.RemoveAll(nil); err != nil {
 		return fmt.Errorf("error deleting receipt: %v", err)
 	}
 	return nil

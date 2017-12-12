@@ -7,14 +7,15 @@ import (
 )
 
 type Receipt struct {
-	ReceiptID bson.ObjectId
-	Created   time.Time
-	Read      time.Time
+	ReceiptID bson.ObjectId `json:"id" bson:"_id"`
+	Created   time.Time     `json:"created"`
+	Reads     []time.Time   `json:"reads"`
 }
 
 func NewReceipt() *Receipt {
 	return &Receipt{
 		ReceiptID: bson.NewObjectId(),
 		Created:   time.Now(),
+		Reads:     make([]time.Time, 0),
 	}
 }
